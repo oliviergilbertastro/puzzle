@@ -1,15 +1,34 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    
-  </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas App</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="content">
+      <div class="canvas-container">
+          <canvas id="myCanvas" style="border: 3px solid black;"></canvas>
+      </div>
 
-  <body>
 
+      <div class="controls">
+          <label for="inputX"><b>$X(t)$:</b></label>
+          <input id="inputX" type="text">
 
-    
-  </body>
+          <label for="inputY"><b>$Y(t)$:</b></label>
+          <input id="inputY" type="text">
 
-  
+          <button id="runBtn">Run</button>
+      </div>
+    </div>
+    <!-- Load JS at the end so DOM is ready -->
+    <script src="script.js"></script>
+</body>
 </html>
-  
