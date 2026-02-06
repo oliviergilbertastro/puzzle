@@ -119,3 +119,7 @@ canvas {
     border-radius: 6px;
     cursor: pointer;
 }
+
+.controls mjx-container {
+    font-size: 1.05em;
+}
