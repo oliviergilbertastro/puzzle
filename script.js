@@ -2,7 +2,7 @@ const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 canvas.width = 1000;
 canvas.height = 500
-const UNIT = 50; // 1 unit = 50 pixels
+const UNIT = 50; // pixels/unit
 
 document.getElementById("runBtn").addEventListener("click", run);
 
@@ -11,7 +11,7 @@ class Ball {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.radius = 10;
+        this.radius = UNIT/5;
     }
 
     draw() {
@@ -38,18 +38,15 @@ class Ball {
 }
 
 
-
+let running = false;
 function run() {
     const val1 = document.getElementById("inputX").value;
     const val2 = document.getElementById("inputY").value;
-    console.log("Running with inputs:", val1, val2)
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Example drawing
-    ctx.fillStyle = "#4a90e2";
-    ctx.fillRect(50, 50, 200, 100);
-    ball.x += 0.1;
-    ball.y += 0.2;
-    console.log("Inputs:", val1, val2);
+    running = true;
+    ball.x = 0;
+    ball.y = 0;
+    time=0;
+    console.log("Running with inputs:", val1, val2, running)
 }
 
 function make_grids(posx, posy) {
@@ -58,14 +55,13 @@ function make_grids(posx, posy) {
     // but we want (0,0) to be at the center of the canvas, so we need to shift everything by canvas.width/2 and canvas.height/2
     ctx.strokeStyle = "#ccc";
     ctx.linewidth = 5;
-    console.log(posx % UNIT)
-    for (let x = (posx % 1)*UNIT-UNIT; x < canvas.width+UNIT; x += UNIT) {
+    for (let x = -(posx % 1)*UNIT-UNIT; x < canvas.width+UNIT; x += UNIT) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, canvas.height);
         ctx.stroke();
     }
-    for (let y = -(posy % 1)*UNIT-UNIT; y < canvas.height+UNIT; y += UNIT) {
+    for (let y = (posy % 1)*UNIT-UNIT; y < canvas.height+UNIT; y += UNIT) {
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
@@ -79,10 +75,19 @@ function draw() {
     ball.draw();
 }
 
+time = 0;
+function update() {
+    if (running && time <= 1) {
+        time += 0.01;
+    } else if (running && time > 1) {
+        time = 1;
+        running = false;
+    }
+    ball.x = 0;
+    ball.y = time*3;
+}
+
 ball = new Ball(0, 0);
 
 setInterval(draw, 10);
-setInterval(function() {
-    ball.x += 0.01;
-    ball.y += 0.02;
-}, 10);
+setInterval(update, 10);
