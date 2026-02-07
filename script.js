@@ -125,7 +125,7 @@ function make_grids(posx, posy) {
     // lines from 3*UNIT-500 to 3*UNIT+500, and from 4*UNIT-500 to 4*UNIT+500
     // but we want (0,0) to be at the center of the canvas, so we need to shift everything by canvas.width/2 and canvas.height/2
     ctx.strokeStyle = "#ccc";
-    ctx.linewidth = 5;
+    ctx.lineWidth = 3;
     for (let x = -(posx % 1)*UNIT-UNIT; x < canvas.width+UNIT; x += UNIT) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -140,9 +140,25 @@ function make_grids(posx, posy) {
     }
 }
 
+function make_ticks(posx, posy, nb_of_ticks=20) {
+    ctx.fillStyle = "#4b4b4b";
+    ctx.font = "15px Arial";
+    let start_val = Math.round(posx-canvas.width/(2*UNIT));
+    total_possible_number_of_ticks = Math.ceil(canvas.width/(UNIT));
+    console.log(start_val, total_possible_number_of_ticks, total_possible_number_of_ticks/nb_of_ticks);
+    i = 0;
+    for (x=start_val; x<start_val+total_possible_number_of_ticks; x+=(total_possible_number_of_ticks/nb_of_ticks)) {
+        ctx.fillText(x, canvas.width*(i/nb_of_ticks)-(posx%1)*UNIT-4, canvas.height-15);
+        i += 1;
+    }
+    for (let y = (posy % 1)*UNIT-UNIT; y < canvas.height+UNIT; y += UNIT) {
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     make_grids(ball.x, ball.y);
+    make_ticks(ball.x, ball.y);
     ball.draw();
 }
 
