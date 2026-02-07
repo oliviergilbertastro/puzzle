@@ -3,7 +3,6 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1000;
 canvas.height = 500
 const UNIT = 50; // pixels/unit
-
 document.getElementById("runBtn").addEventListener("click", run);
 
 
@@ -83,11 +82,12 @@ function update() {
         time = 1;
         running = false;
     }
-    ball.x = 0;
-    ball.y = time*3;
+    ball.x = time*3;
+    ball.y = 0;
 }
 
-ball = new Ball(0, 0);
+
 
 setInterval(draw, 10);
+ball = new Ball(0, 0);
 setInterval(update, 10);
