@@ -143,15 +143,20 @@ function make_grids(posx, posy) {
 function make_ticks(posx, posy, nb_of_ticks=20) {
     ctx.fillStyle = "#4b4b4b";
     ctx.font = "15px Arial";
-    let start_val = Math.round(posx-canvas.width/(2*UNIT));
+    let start_val = Math.floor(posx-(canvas.width/2)/UNIT);
     total_possible_number_of_ticks = Math.ceil(canvas.width/(UNIT));
-    console.log(start_val, total_possible_number_of_ticks, total_possible_number_of_ticks/nb_of_ticks);
+    //console.log(start_val, total_possible_number_of_ticks, total_possible_number_of_ticks/nb_of_ticks);
     i = 0;
     for (x=start_val; x<start_val+total_possible_number_of_ticks; x+=(total_possible_number_of_ticks/nb_of_ticks)) {
         ctx.fillText(x, canvas.width*(i/nb_of_ticks)-(posx%1)*UNIT-4, canvas.height-15);
         i += 1;
     }
-    for (let y = (posy % 1)*UNIT-UNIT; y < canvas.height+UNIT; y += UNIT) {
+    start_val = Math.floor(posy-(canvas.height/2)/UNIT);
+    total_possible_number_of_ticks = Math.ceil(canvas.height/(UNIT));
+    i = 0;
+    for (y=start_val; y<start_val+total_possible_number_of_ticks; y+=(total_possible_number_of_ticks/(nb_of_ticks/2))) {
+        ctx.fillText(y, 15, canvas.height-canvas.height*(i/(nb_of_ticks/2))+(posy%1)*UNIT-4);
+        i += 1;
     }
 }
 
