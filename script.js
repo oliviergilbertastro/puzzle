@@ -37,15 +37,87 @@ class Ball {
 }
 
 
+
+function normalizeExpression(expr, variable = "t") {
+  let s = expr.toLowerCase().replace(/\s+/g, "");
+
+  // Constants
+  s = s.replace(/\bpi\b/g, "Math.PI").replace(/\be\b/g, "Math.E");
+
+
+  // Absolute value |x| → Math.abs(x)
+  while (/\|[^|]+\|/.test(s)) {
+    s = s.replace(/\|([^|]+)\|/g, "Math.abs($1)");
+  }
+
+  // Exponents: ^ → **
+  s = s.replace(/\^/g, "**");
+
+  // Implicit multiplication (function-safe)
+s = s
+  // number followed by variable or Math.*
+  .replace(/(\d)([a-zA-Z])/g, "$1*$2")
+
+  // variable or ')' followed by number
+  .replace(/([a-zA-Z\)])(\d)/g, "$1*$2")
+
+  // ')' followed by variable or '('
+  .replace(/(\))([a-zA-Z(])/g, "$1*$2")
+
+  // number or ')' followed by '(' — but NOT Math.<func>(
+  .replace(
+    /([0-9\)])\(/g,
+    "$1*("
+  )
+
+  // variable followed by '(' — but NOT Math.<func>(
+  .replace(
+    /([a-zA-Z])\(/g,
+    (match, v, offset) => {
+      return s.slice(0, offset).endsWith("Math.") ? `${v}(` : `${v}*(`;
+    }
+  );
+
+  
+  // Functions
+  console.log(s);
+  const funcs = ["sin", "cos", "tan", "log", "exp", "sqrt", "abs"];
+  for (const f of funcs) {
+  // Replace "func*(" with "Math.func("
+  s = s.replace(new RegExp(`\\b${f}\\*\\(`, "g"), `Math.${f}(`);
+}
+  console.log(s);
+
+  return s;
+}
+
+function stringToFunction(expr, variable = "t") {
+  const jsExpr = normalizeExpression(expr, variable);
+  return new Function(variable, `return ${jsExpr};`);
+}
+
+
+
 let running = false;
+let inp1, inp2;
+let func1 = function(t) {return 0;};
+let func2 = function(t) {return 0;};
 function run() {
-    const val1 = document.getElementById("inputX").value;
-    const val2 = document.getElementById("inputY").value;
+    inp1 = document.getElementById("inputX").value;
+    inp2 = document.getElementById("inputY").value;
+    if (inp1 == "") {
+        inp1 = "0";
+    }
+    if (inp2 == "") {
+        inp2 = "0";
+    }
+    func1 = stringToFunction(inp1);
+    func2 = stringToFunction(inp2);
+    console.log(func1);
     running = true;
     ball.x = 0;
     ball.y = 0;
     time=0;
-    console.log("Running with inputs:", val1, val2, running)
 }
 
 function make_grids(posx, posy) {
@@ -82,8 +154,8 @@ function update() {
         time = 1;
         running = false;
     }
-    ball.x = time*3;
-    ball.y = 0;
+    ball.x = func1(time);
+    ball.y = func2(time);
 }
 
 
@@ -91,3 +163,4 @@ function update() {
 setInterval(draw, 10);
 ball = new Ball(0, 0);
 setInterval(update, 10);
+//setInterval(function() {console.log(ball.x, ball.y)}, 1000);
